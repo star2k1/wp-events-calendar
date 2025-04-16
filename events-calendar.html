@@ -1,0 +1,706 @@
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: inherit;
+        background-color: #f8fbff;
+        color: #333;
+    }
+
+    #calendar-container {
+        max-width: 100%;
+        box-sizing: border-box;
+        align-content: center;
+        padding: 0 16px;
+    }
+
+    #calendar-header {
+        position: sticky;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        top: 100px;
+        background: white;
+        z-index: 100;
+        margin-bottom: 20px;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 120, 215, 0.08);
+        border: 1px solid rgba(0, 120, 215, 0.12);
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #month-display {
+        font-size: 24px;
+        font-weight: 600;
+        color: #2c3e50;
+        text-align: center;
+        flex-grow: 1;
+        margin: 0;
+        padding: 0;
+        line-height: 1;
+    }
+
+    .nav-arrow {
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        background: transparent;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+
+    .nav-arrow img {
+        width: 20px;
+        height: 20px;
+        display: block;
+    }
+
+    .nav-arrow:hover {
+        background: rgba(0, 120, 215, 0.08);
+        transform: scale(1.05);
+    }
+
+    .nav-arrow:active {
+        transform: scale(0.95);
+    }
+
+    #calendar-events {
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .date-section {
+        margin-bottom: 20px;
+        padding: 20px;
+        background: #f0f8ff;
+        border-radius: 12px;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-word;
+        hyphens: auto;
+    }
+
+    .event-attachment {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 10px 0px 0px 10px;
+    }
+
+    .event-attachment iframe {
+        aspect-ratio: 16 / 9;
+        height: auto;
+        display: block;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .attachment-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #0078d7;
+        gap: 6px;
+    }
+
+    .attachment-link:hover {
+        text-decoration: underline;
+    }
+
+    .event-title,
+    .event-location,
+    .event-time {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        max-width: 100%;
+    }
+
+    .date-header {
+        font-size: 18px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .event-entry {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 16px;
+        border-top: 1px solid #ddd;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .event-content {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .event-left,
+    .event-right {
+        width: 48%;
+        box-sizing: border-box;
+    }
+
+    .event-title,
+    .event-location,
+    .event-time {
+        margin-inline: 0;
+        padding: 0;
+    }
+
+    .event-entry:first-of-type {
+        border-top: none;
+    }
+
+    .event-time {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    .event-title {
+        font-size: 18px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        color: #444;
+    }
+
+    .event-location {
+        font-size: 16px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .event-icon {
+        width: 20px;
+        height: 20px;
+        vertical-align: middle;
+    }
+
+    .event-description {
+        margin-bottom: 20px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
+    }
+
+    .event-description a {
+        text-decoration: none;
+        word-break: break-all;
+    }
+
+    @media (max-width: 768px) {
+        .event-content {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .event-attachment {
+            padding: 0;
+        }
+
+        .event-left,
+        .event-right {
+            width: 100%;
+            padding-inline: 28px;
+        }
+
+        .date-section {
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .date-header {
+            font-size: 16px;
+        }
+
+        #calendar-container {
+            padding: 0 12px;
+        }
+
+        #calendar-header {
+            padding: 12px 16px;
+            width: 92%;
+            margin-bottom: 16px;
+            top: 10px;
+            margin-top: -10px;
+        }
+
+        #month-display {
+            font-size: 20px;
+        }
+
+        .skeleton-date-header {
+            width: 60% !important;
+        }
+
+        .skeleton-time {
+            width: 40% !important;
+        }
+
+        .skeleton-title {
+            width: 80% !important;
+        }
+
+        .skeleton-location {
+            width: 70% !important;
+        }
+
+        .nav-arrow {
+            padding: 6px;
+        }
+
+        .nav-arrow img {
+            width: 18px;
+            height: 18px;
+        }
+
+        .event-time {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .event-location {
+            font-size: 13px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .event-title {
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 0 0 12px 0;
+            color: #2c3e50;
+        }
+
+        .event-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .event-description {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            color: #4a5568;
+        }
+
+        .event-entry {
+            margin-left: 0;
+            padding: 16px 0;
+            border-top: 1px solid rgba(0, 120, 215, 0.08);
+        }
+
+        .event-entry:first-of-type {
+            padding-top: 0;
+        }
+
+        .event-entry:last-of-type {
+            padding-bottom: 0;
+        }
+    }
+
+    .skeleton-date-section {
+        background: #f0f8ff;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    .skeleton-date-header,
+    .skeleton-time,
+    .skeleton-title,
+    .skeleton-location {
+        background: #ddd;
+        border-radius: 4px;
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    .skeleton-date-header {
+        height: 20px;
+        width: 30%;
+        margin-top: 5px;
+        margin-bottom: 15px;
+    }
+
+    .skeleton-event-entry {
+        margin-left: 25px;
+        padding-top: 10px;
+        border-top: 1px solid #ddd;
+    }
+
+    .skeleton-time {
+        height: 14px;
+        width: 15%;
+        margin-top: 5px;
+        margin-bottom: 20px;
+    }
+
+    .skeleton-title {
+        height: 16px;
+        width: 40%;
+        margin-bottom: 25px;
+    }
+
+    .skeleton-location {
+        height: 14px;
+        width: 30%;
+    }
+
+    @keyframes pulse {
+        0% {
+            background-color: #e0e0e0;
+        }
+
+        50% {
+            background-color: #f5f5f5;
+        }
+
+        100% {
+            background-color: #e0e0e0;
+        }
+    }
+
+    .location-link {
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .location-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div id="calendar-container">
+    <div id="calendar-header">
+        <span class="nav-arrow" id="prev-month">
+            <img src="https://img.icons8.com/ios-glyphs/30/0078d7/chevron-left.png" alt="Previous Month" />
+        </span>
+        <span id="month-display"></span>
+        <span class="nav-arrow" id="next-month">
+            <img src="https://img.icons8.com/ios-glyphs/30/0078d7/chevron-right.png" alt="Next Month" />
+        </span>
+    </div>
+    <div id="calendar-events"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const calendarId = '<YOUR_CALENDAR_ID_HERE>';
+        const apiKey = "<YOUR_API_KEY_HERE>";
+        const eventsContainer = document.getElementById('calendar-events');
+        const loader = document.getElementById('loader');
+        const monthDisplay = document.getElementById('month-display');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month');
+
+        let currentDate = new Date();
+
+        // Replace with English month names if needed
+        const monthNames = [
+            'Jaanuar',
+            'Veebruar',
+            'Märts',
+            'Aprill',
+            'Mai',
+            'Juuni',
+            'Juuli',
+            'August',
+            'September',
+            'Oktoober',
+            'November',
+            'Detsember'
+        ];
+
+        // Estonian public holidays to display flag emoji
+        const publicHolidays = [
+            '01.01', // Uusaasta
+            '24.02', // Iseseisvuspäev
+            '18.04', // Suur reede
+            '20.04', // Ülestõusmispühade 1. püha
+            '01.05', // Kevadpüha
+            '08.06', // Nelipühade 1. püha
+            '23.06', // Võidupüha
+            '24.06', // Jaanipäev
+            '20.08', // Taasiseseisvumispäev
+            '24.12', // Jõululaupäev
+            '25.12', // Esimene jõulupüha
+            '26.12' // Teine jõulupüha
+        ];
+
+        function simplifyLocation(location) {
+            if (!location) {
+                return '';
+            }
+            const match = location.match(/(.+?),\s*(.+?)(,|$)/);
+            return match ? `${match[1]}, ${match[2]}` : location;
+        }
+
+        function isImageAttachment(title) {
+            return [
+                '.jpg',
+                '.jpeg',
+                '.png',
+                '.gif',
+                '.bmp',
+                '.svg',
+                '.webp',
+                '.heic',
+                '.heif'
+            ].some(extension => title.toLowerCase().endsWith(extension));
+        }
+
+        function getDriveViewerUrl(driveUrl) {
+            let fileId = '';
+            switch (true) {
+                case driveUrl.includes('drive.google.com/open?id='):
+                    fileId = driveUrl.split('open?id=')[1].split('&')[0];
+                    break;
+                case driveUrl.includes('drive.google.com/file/d/'):
+                    fileId = driveUrl.split('file/d/')[1].split('/')[0];
+                    break;
+                case driveUrl.includes('drive.google.com/uc?id='):
+                    fileId = driveUrl.split('uc?id=')[1].split('&')[0];
+                    break;
+                default:
+                    return driveUrl;
+            }
+            return `https://drive.google.com/file/d/${fileId}/preview`;
+        }
+
+        function createSkeletonLoader() {
+            let skeletonHTML = '';
+            for (let i = 0; i < 4; i++) {
+                skeletonHTML += `
+                    <div class="skeleton-date-section">
+                        <div class="skeleton-date-header"></div>
+                        <div class="skeleton-event-entry">
+                            <div class="skeleton-time"></div>
+                            <div class="skeleton-title"></div>
+                            <div class="skeleton-location"></div>
+                        </div>
+                    </div>
+                `;
+            }
+            return skeletonHTML;
+        }
+
+        function fetchAndDisplayEvents() {
+            eventsContainer.innerHTML = createSkeletonLoader();
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString();
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59).toISOString();
+            fetch(
+                `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${apiKey}&timeMin=${firstDay}&timeMax=${lastDay}&singleEvents=true&orderBy=startTime`
+            )
+                .then(response => response.json())
+                .then(data => {
+                    let eventsHTML = '';
+                    let currentGroupDate = '';
+                    let isHoliday = false;
+
+                    if (!data.items || data.items.length === 0) {
+                        eventsContainer.innerHTML = "<p style='text-align: center';>Sündmusi ei leitud.</p>";
+                        return;
+                    }
+
+                    data.items.forEach(event => {
+                        const startDate = new Date(event.start.dateTime || event.start.date);
+                        const endDate = event.end ? new Date(event.end.dateTime || event.end.date) : null;
+
+                        let dateString = startDate.toLocaleDateString('et-EE', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            weekday: 'long'
+                        });
+                        let formattedDate = startDate.toLocaleDateString('en-GB').replace('/', '.').replace('/', '.');
+                        isHoliday = publicHolidays.includes(formattedDate.substring(0, 5));
+                        dateString = `${dateString.charAt(0).toUpperCase()}${dateString.slice(1)}`;
+                        const startTime = startDate.toLocaleTimeString('et-EE', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                        const endTime = endDate
+                            ? endDate.toLocaleTimeString('et-EE', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            })
+                            : '';
+                        const duration = endTime ? `${startTime} - ${endTime}` : startTime;
+
+                        const description = event.description ? `<p class="event-description">${event.description}</p>` : '';
+                        const location = event.location
+                            ? `
+                        <div class="event-location">
+                            <img src="https://img.icons8.com/?size=100&id=7880&format=png&color=000000" class="event-icon" alt="Asukoht">
+                            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                event.location
+                            )}" target="_blank" style="text-decoration: none;">
+                                ${simplifyLocation(event.location)}
+                            </a>
+                        </div>
+                    `
+                            : '';
+
+                        let attachmentsHTML = '';
+                        if (event.attachments && event.attachments.length > 0) {
+                            event.attachments.forEach(attachment => {
+                                if (isImageAttachment(attachment.title)) {
+                                    const viewerUrl = getDriveViewerUrl(attachment.fileUrl);
+                                    attachmentsHTML += `
+                                        <div class="event-attachment">
+                                            <iframe src="${viewerUrl}"
+                                                frameborder="0"
+                                                allowfullscreen
+                                                allow="autoplay">
+                                            </iframe>
+                                        </div>
+                                    `;
+                                } else {
+                                    attachmentsHTML += `
+                                        <div class="event-attachment">
+                                            <a href="${attachment.fileUrl}" target="_blank" class="attachment-link">
+                                            <img src="https://img.icons8.com/ios-filled/20/777777/attach.png" class="event-icon" alt="Manus">
+                                                ${attachment.title}
+                                            </a>
+                                        </div>
+                                    `;
+                                }
+                            });
+
+                            if (attachmentsHTML !== '') {
+                                attachmentsHTML = `<div class="event-attachments">${attachmentsHTML}</div>`;
+                            }
+                        }
+
+                        if (currentGroupDate !== dateString) {
+                            if (currentGroupDate) eventsHTML += `</div>`;
+                            currentGroupDate = dateString;
+
+                            eventsHTML += `
+                                <div class="date-section">
+                                    <div class="date-header">
+                                        <img src="${isHoliday
+                                    ? 'https://img.icons8.com/?size=100&id=Y1aYqaQ7jtKP&format=png&color=000000'
+                                    : 'https://img.icons8.com/?size=100&id=84997&format=png'
+                                }" class="event-icon" alt="Kuupäev">
+                                        ${dateString}
+                                    </div>
+                            `;
+                        }
+                        eventsHTML += `
+                            <div class="event-entry" data-event-date="${startDate.toISOString()}">
+                                <div class="event-content">
+                                    <div class="event-left">
+                                        <div class="event-time">${duration}</div>
+                                        <p class="event-title">${event.summary}</p>
+                                        ${description}
+                                    </div>
+                                    <div class="event-right">
+                                        ${attachmentsHTML}
+                                    </div>
+                                </div>
+                                <div class="event-location">
+                                    ${location}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    eventsHTML += `</div>`;
+                    eventsContainer.innerHTML = eventsHTML;
+                    scrollToFirstUpcomingEvent();
+                })
+                .catch(error => {
+                    console.error(`Error fetching Google Calendar events: ${error}`);
+                    eventsContainer.innerHTML = "<p style='text-align: center'>Viga sündmuste laadimisel.</p>";
+                });
+        }
+
+        function updateCalendar() {
+            monthDisplay.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+            fetchAndDisplayEvents();
+        }
+
+        function scrollToFirstUpcomingEvent() {
+            const events = document.querySelectorAll('.event-entry');
+            const now = new Date();
+            const isMobile = window.innerWidth <= 768;
+            const offset = isMobile ? 130 : 250;
+            for (let event of events) {
+                const eventDate = new Date(event.getAttribute('data-event-date'));
+                const eventDateOnly = new Date(eventDate.toDateString());
+                const nowDateOnly = new Date(now.toDateString());
+                if (eventDateOnly >= nowDateOnly) {
+                    const eventPosition = event.getBoundingClientRect().top + window.scrollY;
+                    const offsetPosition = eventPosition - offset;
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                    break;
+                }
+            }
+        }
+
+        function adjustIframeHeights() {
+            document.querySelectorAll('.event-attachment iframe').forEach(iframe => {
+                const image = new Image();
+                const fileUrl = iframe.src.replace('https://drive.google.com/file/d/', '').split('/')[0];
+                const imageUrl = `https://drive.google.com/uc?id=${fileUrl}`;
+                image.onload = () => {
+                    const aspectRatio = image.naturalWidth / image.naturalHeight;
+                    iframe.style.height = `${iframe.clientWidth / aspectRatio}px`;
+                };
+                image.src = imageUrl;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', adjustIframeHeights);
+        window.addEventListener('resize', adjustIframeHeights);
+        document.getElementById('prev-month').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updateCalendar();
+        });
+        document.getElementById('next-month').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            updateCalendar();
+        });
+        updateCalendar();
+
+        document.querySelectorAll('.nav-arrow').forEach(button => {
+            button.addEventListener('touchstart', () => {
+                button.style.background = 'rgba(0, 120, 215, 0.2)';
+            });
+            button.addEventListener('touchend', () => {
+                setTimeout(() => {
+                    button.style.background = 'none';
+                }, 50);
+            });
+        });
+    });
+</script>
